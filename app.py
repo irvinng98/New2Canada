@@ -36,7 +36,7 @@ def get_chat_response():
     # Create a prompt for the Gemini model
     prompt = f"You are a helpful assistant for newcomers to Canada. The user is asking about {category}. Their details are: Location - {session.get('location')}, Status - {session.get('status')}, Gender - {session.get('gender')}, Age - {session.get('age')}. Please provide a helpful and encouraging response to the following message: {user_message}"
     
-    model = genai.GenerativeModel('gemini-pro')
+    model = genai.GenerativeModel('gemini-pro-latest')
     response = model.generate_content(prompt)
     
     return jsonify({'response': response.text})
