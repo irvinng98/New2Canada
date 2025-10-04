@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New2Canada - Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Chat about {{ category }}</h1>
+    <div id="chat-container">
+        <div id="messages">
+            <p><strong>Chatbot:</strong> Hello! How can I help you with {{ category }} in Canada? I have your details as: Location - {{ session['location'] }}, Status - {{ session['status'] }}, Gender - {{ session['gender'] }}, Age - {{ session['age'] }}.</p>
+        </div>
+        <div id="user-input">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('message-input');
+            const messages = document.getElementById('messages');
+            const userMessage = input.value;
+            if (userMessage.trim() === '') return;
+
+            messages.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+            input.value = '';
+
+            const response = await fetch('/get_chat_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: userMessage,
+                    category: '{{ category }}'
+                })
+            });
+
+            const data = await response.json();
+            messages.innerHTML += `<p><strong>Chatbot:</strong> ${data.response}</p>`;
+            messages.scrollTop = messages.scrollHeight;
+        }
+    </script>
+</body>
+</html>

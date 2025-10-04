@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New2Canada - Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Welcome to New2Canada</h1>
+    <p>Your personalized guide to settling into life in Canada.</p>
+    <p>Tell us about yourself to get started:</p>
+    <form action="/" method="post">
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br><br>
+
+        <label for="status">Status in Canada:</label>
+        <select id="status" name="status" required>
+            <option value="student">Student</option>
+            <option value="worker">Worker</option>
+            <option value="permanent_resident">Permanent Resident</option>
+            <option value="citizen">Citizen</option>
+            <option value="visitor">Visitor</option>
+        </select><br><br>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select><br><br>
+
+        <label for="age">Age:</label>
+        <select id="age" name="age" required>
+            <option value="under_18">Under 18</option>
+            <option value="18-24">18-24</option>
+            <option value="25-34">25-34</option>
+            <option value="35-44">35-44</option>
+            <option value="45-54">45-54</option>
+            <option value="55-64">55-64</option>
+            <option value="65_plus">65+</option>
+        </select><br><br>
+
+        <button type="submit">Go</button>
+    </form>
+</body>
+</html>

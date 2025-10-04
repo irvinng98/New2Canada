@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New2Canada - Assistance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Choose Your Area of Need</h1>
+    <div class="assistance-container">
+        <a href="/chat?category=healthcare" class="category-link">
+            <div class="category-icon">Healthcare</div>
+        </a>
+        <a href="/chat?category=finance" class="category-link">
+            <div class="category-icon">Finance</div>
+        </a>
+        <a href="/chat?category=education" class="category-link">
+            <div class="category-icon">Education</div>
+        </a>
+        <a href="/chat?category=jobs" class="category-link">
+            <div class="category-icon">Jobs</div>
+        </a>
+        <a href="/chat?category=food" class="category-link">
+            <div class="category-icon">Food</div>
+        </a>
+        <a href="/chat?category=clothing" class="category-link">
+            <div class="category-icon">Clothing</div>
+        </a>
+        <a href="/chat?category=housing" class="category-link">
+            <div class="category-icon">Housing</div>
+        </a>
+    </div>
+</body>
+</html>
