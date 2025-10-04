@@ -1,9 +1,13 @@
 # New2Canada - New To Canada AI Helper
+*This web app is created for the SFU Surge Stormhacks 2025 hackathon*
 
 ## About This Web App
+
 Welcome to New2Canada, your personalized guide to settling into life in Canada.
 
-We know that moving to a new country can be overwhelming. New2Canada simplifies your journey by connecting you to the specific information you need, when you need it. Our mission is to help you navigate the essentials and feel at home in Canada faster. Welcome, and we're glad you're here!
+We know that moving to a new country can be overwhelming. New2Canada simplifies your journey by connecting you to the specific information you need, when you need it.
+
+Our mission is to help you navigate the essentials and feel at home in Canada faster. Welcome, and we're glad you're here!
 
 ## How It Works:
 
