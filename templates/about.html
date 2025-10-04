@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New2Canada - About Us</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Load OGL for Iridescence -->
+    <script src="https://cdn.skypack.dev/ogl"></script>
+</head>
+<body class="landing-page">
+    <div class="background-wrapper">
+        <!-- This container is for the Iridescence canvas -->
+        <div id="iridescence-bg" class="background-container" 
+             data-effect="iridescence"
+             data-color='[0.5, 0.7, 1.0]'
+             data-speed="0.7"
+             data-amplitude="0.2"
+             data-mouse-react="true">
+        </div>
+    </div>
+    <div class="content-wrapper">
+        <div class="onboarding-container" style="max-width: 800px; padding: 50px;">
+            <h1 style="color: #3a86ff;">About New2Canada</h1>
+            <p style="text-align: left; line-height: 1.8; color: #555;">
+                Welcome to New2Canada, your personalized guide to settling into life in Canada. 
+                We know that moving to a new country can be overwhelming, so we created this application 
+                for the SFU Surge Stormhacks 2025 hackathon to simplify your journey.
+            </p>
+            <p style="text-align: left; line-height: 1.8; color: #555;">
+                Our core mission is to help you navigate the essentials and feel at home in Canada faster. 
+                New2Canada connects you to the specific information you need, right when you need it, 
+                by leveraging a smart chatbot tailored to your unique situation.
+            </p>
+
+            <h2 style="color: #3a86ff; margin-top: 30px; font-size: 1.5rem;">How It Works:</h2>
+            <ul style="list-style-type: none; padding-left: 0; text-align: left; color: #555;">
+                <li style="margin-bottom: 10px;">
+                    <strong style="color: #004494;">1. Tell Us About Yourself:</strong> Share a few basic details like your location and status in Canada.
+                </li>
+                <li style="margin-bottom: 10px;">
+                    <strong style="color: #004494;">2. Choose Your Area of Need:</strong> Select from key categories like Housing, Jobs, Healthcare, and more.
+                </li>
+                <li style="margin-bottom: 10px;">
+                    <strong style="color: #004494;">3. Get Personalized Guidance:</strong> Our smart chatbot provides tailored advice, resources, and next steps based on your profile.
+                </li>
+            </ul>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="/" class="btn btn-primary" style="min-width: 250px;">Go Back to Welcome</a>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='background-effects.js') }}"></script>
+</body>
+</html>

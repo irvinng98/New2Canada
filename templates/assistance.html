@@ -5,31 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New2Canada - Assistance</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.skypack.dev/ogl"></script>
 </head>
-<body>
-    <h1>Choose Your Area of Need</h1>
-    <div class="assistance-container">
-        <a href="/chat?category=healthcare" class="category-link">
-            <div class="category-icon">Healthcare</div>
-        </a>
-        <a href="/chat?category=finance" class="category-link">
-            <div class="category-icon">Finance</div>
-        </a>
-        <a href="/chat?category=education" class="category-link">
-            <div class="category-icon">Education</div>
-        </a>
-        <a href="/chat?category=jobs" class="category-link">
-            <div class="category-icon">Jobs</div>
-        </a>
-        <a href="/chat?category=food" class="category-link">
-            <div class="category-icon">Food</div>
-        </a>
-        <a href="/chat?category=clothing" class="category-link">
-            <div class="category-icon">Clothing</div>
-        </a>
-        <a href="/chat?category=housing" class="category-link">
-            <div class="category-icon">Housing</div>
-        </a>
+<body class="landing-page">
+    <div class="background-wrapper">
+        <div id="iridescence-bg" class="background-container" 
+             data-effect="iridescence"
+             data-color='[0.5, 0.7, 1.0]'
+             data-speed="0.7"
+             data-amplitude="0.2"
+             data-mouse-react="true">
+        </div>
     </div>
+    <div class="content-wrapper">
+        <h1 style="color: black;">Choose Your Area of Need</h1>
+        <div class="assistance-container">
+            <a href="/chat?category=healthcare" class="category-link">
+                <div class="category-icon">Healthcare</div>
+            </a>
+            <a href="/chat?category=finance" class="category-link">
+                <div class="category-icon">Finance</div>
+            </a>
+            <a href="/chat?category=education" class="category-link">
+                <div class="category-icon">Education</div>
+            </a>
+            <a href="/chat?category=jobs" class="category-link">
+                <div class="category-icon">Jobs</div>
+            </a>
+            <a href="/chat?category=food" class="category-link">
+                <div class="category-icon">Food</div>
+            </a>
+            <a href="/chat?category=clothing" class="category-link">
+                <div class="category-icon">Clothing</div>
+            </a>
+            <a href="/chat?category=housing" class="category-link">
+                <div class="category-icon">Housing</div>
+            </a>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='background-effects.js') }}"></script>
 </body>
 </html>
