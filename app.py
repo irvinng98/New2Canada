@@ -4,14 +4,16 @@ import os
 
 # --- Configuration and Initialization ---
 
-# Configure the Gemini API
-genai.configure(api_key="AIzaSyDHHx8-136Q5Cw0b6bVe8ud2Q3J3uSmDNU")
+# Configure the Gemini API (use environment variable instead of hardcoding)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY environment variable is not set!")
+
+genai.configure(api_key=GEMINI_API_KEY)
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
-
-app = Flask(__name__)
-# IMPORTANT: Generate a strong, unique key for production deployment
+app.secret_key = os.getenv("SECRET_KEY", "replace_this_in_production")  # Always change for production
 
 # Define the custom model paths
 CATEGORY_MODELS = {
@@ -115,7 +117,6 @@ def get_chat_response():
         app.logger.error(f"Gemini API Error for category {category} using model {model_name}: {e}")
         return jsonify({'response': 'Sorry, I ran into an issue connecting with my intelligence. Please check the logs.'}), 500
 
+
 if __name__ == '__main__':
-    # Flask is configured to run when the script is executed directly
-    # In production, use a WSGI server like Gunicorn
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)
