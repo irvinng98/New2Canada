@@ -46,17 +46,23 @@
             </div>
 
             <!-- Who We Are Section -->
-            <div class="about-section">
-                <div class="section-icon">🎯</div>
-                <h2 class="section-title">Who We Are</h2>
-                <p class="section-text">
+            <div class="about-section" style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                <div>
+                    <h2 class="section-title">Who We Are</h2>
+                    <p class="section-text">
                     Hi! We’re Irvin and Yufei, the husband-and-wife team behind this app. 
                     Our journey began online (Irvin in Vancouver and Yufei in Shenzhen) and after two years of long distance, 
                     we finally got married and began the immigration process to bring Yufei to Canada. 
                     Navigating the paperwork, challenges, and cultural adjustments wasn’t easy, and once Yufei arrived, 
                     we realized how overwhelming it can be for newcomers to find clear guidance and community support. 
                     That experience inspired us to create this app to make the transition to life in Canada easier, more informed, and more connected.
-                </p>
+                    </p>
+                </div>
+                <img src="{{ url_for('static', filename='Us.jpg') }}" 
+                alt="Irvin and Yufei" 
+                style="width: 250px; height: auto; border-radius: 20px; 
+                        object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+                        margin: 1.5rem auto; display: block;" />
             </div>
 
 
