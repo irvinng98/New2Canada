@@ -4,17 +4,11 @@ import os
 
 # --- Configuration and Initialization ---
 
-# 1. BEST PRACTICE: Read API Key from environment variable for security.
-#    If the key is not set in the environment, you can provide a placeholder or raise an error.
-GEMINI_API_KEY = "AIzaSyDHHx8-136Q5Cw0b6bVe8ud2Q3J3uSmDNU"
+# Configure the Gemini API
+genai.configure(api_key="AIzaSyDHHx8-136Q5Cw0b6bVe8ud2Q3J3uSmDNU")
 
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-else:
-    # NOTE: In a production environment, this should halt the app or use a robust secret manager.
-    print("WARNING: GEMINI_API_KEY not found. Using a placeholder or default configuration.")
-    # For development/testing purposes, a placeholder can sometimes be used.
-    # genai.configure(api_key="YOUR_PLACEHOLDER_KEY")
+app = Flask(__name__)
+app.secret_key = 'supersecretkey'
 
 app = Flask(__name__)
 # IMPORTANT: Generate a strong, unique key for production deployment
