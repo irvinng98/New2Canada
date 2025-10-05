@@ -3,7 +3,7 @@
 # New2Canada - New To Canada AI Helper 
 *This web app is created for the SFU Surge Stormhacks 2025 hackathon*
 
-**Website Now Live**: n2c.tech
+**Website Now Live**: https://n2c.tech
 
 ## About This Web App
 
