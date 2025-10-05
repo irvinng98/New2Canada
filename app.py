@@ -12,7 +12,6 @@ app.secret_key = 'supersecretkey'
 
 app = Flask(__name__)
 # IMPORTANT: Generate a strong, unique key for production deployment
-app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default_fallback_secret_key_change_me')
 
 # Define the custom model paths
 CATEGORY_MODELS = {
