@@ -22,36 +22,45 @@
             <h1 class="assistance-title">How can we help you today?</h1>
             <p class="assistance-subtitle">Choose a topic to get personalized assistance</p>
             
-            <div class="assistance-container">
-                <a href="/chat?category=housing" class="category-link">
-                    <div class="category-icon">🏠</div>
-                    <span>Housing</span>
-                </a>
-                
-                <a href="/chat?category=employment" class="category-link">
-                    <div class="category-icon">💼</div>
-                    <span>Employment</span>
-                </a>
-                
-                <a href="/chat?category=education" class="category-link">
-                    <div class="category-icon">📚</div>
-                    <span>Education</span>
-                </a>
-                
-                <a href="/chat?category=healthcare" class="category-link">
-                    <div class="category-icon">🏥</div>
-                    <span>Healthcare</span>
-                </a>
-                
-                <a href="/chat?category=immigration" class="category-link">
-                    <div class="category-icon">✈️</div>
-                    <span>Immigration</span>
-                </a>
-                
-                <a href="/chat?category=financial" class="category-link">
-                    <div class="category-icon">💰</div>
-                    <span>Financial</span>
-                </a>
+            <div class="assistance-container-wrapper">
+                <button class="scroll-btn scroll-btn-left">‹</button>
+                <div class="assistance-container">
+                    <a href="/chat?category=housing" class="category-link">
+                        <div class="category-icon">🏠</div>
+                        <span>Housing</span>
+                    </a>
+                    
+                    <a href="/chat?category=employment" class="category-link">
+                        <div class="category-icon">💼</div>
+                        <span>Employment</span>
+                    </a>
+                    
+                    <a href="/chat?category=education" class="category-link">
+                        <div class="category-icon">📚</div>
+                        <span>Education</span>
+                    </a>
+                    
+                    <a href="/chat?category=healthcare" class="category-link">
+                        <div class="category-icon">🏥</div>
+                        <span>Healthcare</span>
+                    </a>
+                    
+                    <a href="/chat?category=immigration" class="category-link">
+                        <div class="category-icon">✈️</div>
+                        <span>Immigration</span>
+                    </a>
+                    
+                    <a href="/chat?category=financial" class="category-link">
+                        <div class="category-icon">💰</div>
+                        <span>Financial</span>
+                    </a>
+
+                    <a href="/chat?category=food" class="category-link">
+                        <div class="category-icon">🥫</div>
+                        <span>Food</span>
+                    </a>
+                </div>
+                <button class="scroll-btn scroll-btn-right">›</button>
             </div>
             
             <div class="back-link-container">
@@ -59,6 +68,119 @@
             </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='background-effects.js') }}"></script>
-</body>
-</html>
+        <script src="{{ url_for('static', filename='background-effects.js') }}"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const container = document.querySelector('.assistance-container');
+                const leftBtn = document.querySelector('.scroll-btn-left');
+                const rightBtn = document.querySelector('.scroll-btn-right');
+                
+                if (!container || !leftBtn || !rightBtn) return;
+
+                const scrollAmount = 300;
+                let isScrolling = false;
+
+                // Clone items for seamless looping (we need enough clones to fill the viewport)
+                const items = Array.from(container.children);
+                const visibleItems = Math.ceil(container.clientWidth / (160 + 20)); // item width + gap
+                const clonesNeeded = visibleItems + 2; // Extra buffer
+
+                // Add clones to the end
+                for (let i = 0; i < clonesNeeded; i++) {
+                    items.forEach(item => {
+                        const clone = item.cloneNode(true);
+                        clone.setAttribute('data-clone', 'true');
+                        container.appendChild(clone);
+                    });
+                }
+
+                // Add clones to the beginning (for reverse scrolling)
+                for (let i = 0; i < clonesNeeded; i++) {
+                    items.forEach(item => {
+                        const clone = item.cloneNode(true);
+                        clone.setAttribute('data-clone', 'true');
+                        container.insertBefore(clone, container.firstChild);
+                    });
+                }
+
+                // Set initial scroll position to the first original item
+                const firstOriginalItem = items[0];
+                setTimeout(() => {
+                    container.scrollLeft = firstOriginalItem.offsetLeft - container.offsetLeft;
+                }, 100);
+
+                function scroll(direction) {
+                    if (isScrolling) return;
+                    isScrolling = true;
+
+                    const currentScroll = container.scrollLeft;
+                    const newScroll = currentScroll + (scrollAmount * direction);
+
+                    container.scrollTo({
+                        left: newScroll,
+                        behavior: 'smooth'
+                    });
+
+                    // Check if we need to reset position seamlessly
+                    setTimeout(() => {
+                        const maxScroll = container.scrollWidth - container.clientWidth;
+                        const buffer = scrollAmount * 2;
+
+                        if (direction === 1 && container.scrollLeft >= maxScroll - buffer) {
+                            // We're near the end, jump to the beginning clones without animation
+                            const jumpPosition = container.scrollLeft - (items.length * (160 + 20));
+                            container.scrollTo({
+                                left: jumpPosition,
+                                behavior: 'auto'
+                            });
+                        } else if (direction === -1 && container.scrollLeft <= buffer) {
+                            // We're near the beginning, jump to the end clones without animation
+                            const jumpPosition = container.scrollLeft + (items.length * (160 + 20));
+                            container.scrollTo({
+                                left: jumpPosition,
+                                behavior: 'auto'
+                            });
+                        }
+                        
+                        isScrolling = false;
+                    }, 300);
+                }
+
+                function scrollRight() {
+                    scroll(1);
+                }
+
+                function scrollLeft() {
+                    scroll(-1);
+                }
+
+                // Add click event listeners
+                leftBtn.addEventListener('click', scrollLeft);
+                rightBtn.addEventListener('click', scrollRight);
+
+                // Keyboard arrow support
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        scrollLeft();
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        scrollRight();
+                    }
+                });
+
+                // Optional: Auto-scroll (uncomment if desired)
+                /*
+                let autoScroll = setInterval(scrollRight, 3000);
+                
+                // Pause auto-scroll on hover
+                container.addEventListener('mouseenter', () => clearInterval(autoScroll));
+                container.addEventListener('mouseleave', () => {
+                    autoScroll = setInterval(scrollRight, 3000);
+                });
+                */
+            });
+        </script>
+    </body>
+    </html>

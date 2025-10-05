@@ -450,7 +450,7 @@ button:active {
     font-size: 2.8rem;
     font-weight: 800;
     margin-bottom: 15px;
-    background: linear-gradient(135deg, #c8102e 0%, #ff1744 100%);
+    background:  #ffffff;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -463,25 +463,42 @@ button:active {
     font-weight: 500;
 }
 
+/* HORIZONTAL SCROLL CONTAINER STYLES */
+.assistance-container-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 20px 0 40px;
+    max-width: 100%;
+}
+
 .assistance-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 24px;
-    justify-content: center;
-    padding: 0 20px;
-    max-width: 900px;
-    margin: 0 auto 40px;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 20px 10px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+}
+
+.assistance-container::-webkit-scrollbar {
+    display: none;
 }
 
 .category-link {
+    flex: 0 0 auto;
+    width: 160px;
+    height: 180px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    color: #2c3e50;
-    width: 160px;
-    min-height: 180px;
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(20px);
     padding: 24px 20px;
@@ -489,6 +506,9 @@ button:active {
     border: 3px solid rgba(200, 16, 46, 0.3);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    color: #2c3e50;
+    /* Optional: enable snap scrolling */
+    scroll-snap-align: start;
 }
 
 .category-link:hover {
@@ -525,6 +545,56 @@ button:active {
     font-weight: 600;
     font-size: 1rem;
     transition: all 0.3s ease;
+}
+
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    z-index: 10;
+    border: none;
+}
+
+.scroll-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.scroll-btn-left {
+    left: -25px;
+}
+
+.scroll-btn-right {
+    right: -25px;
+}
+
+/* Hide arrows on mobile */
+@media (max-width: 768px) {
+    .scroll-btn {
+        display: none;
+    }
+    
+    .assistance-container-wrapper {
+        margin: 20px -10px 40px;
+    }
+    
+    .assistance-container {
+        padding: 20px 10px;
+    }
 }
 
 .btn-back {
@@ -781,9 +851,8 @@ button:active {
     flex-wrap: wrap;
 }
 
-
 .btn-home {
-    background: transparent
+    background: transparent;
 }
 
 /* ===================================
@@ -834,6 +903,15 @@ button:active {
         width: 70px;
         height: 70px;
         font-size: 1.7rem;
+    }
+
+    /* Assistance Page Mobile */
+    .assistance-title {
+        font-size: 2.2rem;
+    }
+
+    .assistance-subtitle {
+        font-size: 1.1rem;
     }
 
     /* About Page Responsive */
@@ -933,6 +1011,27 @@ button:active {
 
     .user_data-container {
         padding: 30px 20px;
+    }
+
+    /* Assistance Page Mobile */
+    .assistance-title {
+        font-size: 1.8rem;
+    }
+
+    .assistance-subtitle {
+        font-size: 1rem;
+    }
+
+    .category-link {
+        width: 130px;
+        min-height: 150px;
+        padding: 20px 15px;
+    }
+
+    .category-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
     }
 
     /* About Page Mobile */

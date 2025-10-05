@@ -1028,3 +1028,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Simpler looping scroll
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.assistance-container');
+    const leftBtn = document.querySelector('.scroll-btn-left');
+    const rightBtn = document.querySelector('.scroll-btn-right');
+    
+    if (!container || !leftBtn || !rightBtn) return;
+    
+    const scrollAmount = 200;
+    
+    function scrollLeft() {
+        if (container.scrollLeft <= 0) {
+            // If at beginning, scroll to end
+            container.scrollLeft = container.scrollWidth;
+        } else {
+            container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        }
+    }
+    
+    function scrollRight() {
+        if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+            // If at end, scroll to beginning
+            container.scrollLeft = 0;
+        } else {
+            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    }
+    
+    leftBtn.addEventListener('click', scrollLeft);
+    rightBtn.addEventListener('click', scrollRight);
+});
