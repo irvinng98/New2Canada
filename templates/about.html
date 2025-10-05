@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New2Canada - About Us</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Load OGL for Iridescence -->
     <script src="https://cdn.skypack.dev/ogl"></script>
 </head>
 <body class="landing-page">
     <div class="background-wrapper">
-        <!-- This container is for the Iridescence canvas -->
-        <div id="iridescence-bg" class="background-container" 
+        <div id="iridescence-bg" class="background-container"
              data-effect="iridescence"
              data-color='[0.5, 0.7, 1.0]'
              data-speed="0.7"
@@ -19,37 +17,150 @@
              data-mouse-react="true">
         </div>
     </div>
+    
     <div class="content-wrapper">
-        <div class="onboarding-container" style="max-width: 800px; padding: 50px;">
-            <h1 style="color: #3a86ff;">About New2Canada</h1>
-            <p style="text-align: left; line-height: 1.8; color: #555;">
-                Welcome to New2Canada, your personalized guide to settling into life in Canada. 
-                We know that moving to a new country can be overwhelming, so we created this application 
-                for the SFU Surge Stormhacks 2025 hackathon to simplify your journey.
-            </p>
-            <p style="text-align: left; line-height: 1.8; color: #555;">
-                Our core mission is to help you navigate the essentials and feel at home in Canada faster. 
-                New2Canada connects you to the specific information you need, right when you need it, 
-                by leveraging a smart chatbot tailored to your unique situation.
-            </p>
+        <div class="about-container">
+            <!-- Hero Section -->
+            <div class="about-hero">
+                    <a href="/" class="btn btn-home">
+                        <div class="about-icon">🇨🇦</div>
+                    </a>
+                <h1 class="about-title">About New2Canada</h1>
+                <p class="about-tagline">Your trusted AI companion for starting your Canadian journey</p>
+            </div>
 
-            <h2 style="color: #3a86ff; margin-top: 30px; font-size: 1.5rem;">How It Works:</h2>
-            <ul style="list-style-type: none; padding-left: 0; text-align: left; color: #555;">
-                <li style="margin-bottom: 10px;">
-                    <strong style="color: #004494;">1. Tell Us About Yourself:</strong> Share a few basic details like your location and status in Canada.
-                </li>
-                <li style="margin-bottom: 10px;">
-                    <strong style="color: #004494;">2. Choose Your Area of Need:</strong> Select from key categories like Housing, Jobs, Healthcare, and more.
-                </li>
-                <li style="margin-bottom: 10px;">
-                    <strong style="color: #004494;">3. Get Personalized Guidance:</strong> Our smart chatbot provides tailored advice, resources, and next steps based on your profile.
-                </li>
-            </ul>
-            <div style="text-align: center; margin-top: 40px;">
-                <a href="/" class="btn btn-primary" style="min-width: 250px;">Go Back to Homepage</a>
+            <!-- Mission Section -->
+            <div class="about-section">
+                <div class="section-icon">🎯</div>
+                <h2 class="section-title">Our Mission</h2>
+                <p class="section-text">
+                    Welcome to New2Canada, your personalized guide to settling into life in Canada.
+                    We know that moving to a new country can be overwhelming, so we created this application
+                    for the SFU Surge Stormhacks 2025 hackathon to simplify your journey.
+                </p>
+                <p class="section-text">
+                    Our core mission is to help you navigate the essentials and feel at home in Canada faster.
+                    New2Canada connects you to the specific information you need, right when you need it,
+                    by leveraging a smart chatbot tailored to your unique situation.
+                </p>
+            </div>
+
+            <!-- Who We Are Section -->
+            <div class="about-section">
+                <div class="section-icon">🎯</div>
+                <h2 class="section-title">Who We Are</h2>
+                <p class="section-text">
+                    Hi! We’re Irvin and Yufei, the husband-and-wife team behind this app. 
+                    Our journey began online (Irvin in Vancouver and Yufei in Shenzhen) and after two years of long distance, 
+                    we finally got married and began the immigration process to bring Yufei to Canada. 
+                    Navigating the paperwork, challenges, and cultural adjustments wasn’t easy, and once Yufei arrived, 
+                    we realized how overwhelming it can be for newcomers to find clear guidance and community support. 
+                    That experience inspired us to create this app to make the transition to life in Canada easier, more informed, and more connected.
+                </p>
+            </div>
+
+
+            <!-- How It Works Section -->
+            <div class="about-section">
+                <div class="section-icon">⚡</div>
+                <h2 class="section-title">How It Works</h2>
+                
+                <div class="steps-container">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Tell Us About Yourself</h3>
+                            <p class="step-description">
+                                Share a few basic details like your location and status in Canada.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Choose Your Area of Need</h3>
+                            <p class="step-description">
+                                Select from key categories like Housing, Jobs, Healthcare, and more.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Get Personalized Guidance</h3>
+                            <p class="step-description">
+                                Our smart chatbot provides tailored advice, resources, and next steps based on your profile.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="about-section">
+                <div class="section-icon">✨</div>
+                <h2 class="section-title">What Our Chatbot Specializes In</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🏠</div>
+                        <h3 class="feature-title">Housing</h3>
+                        <p class="feature-text">Find your home in Canada</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">💼</div>
+                        <h3 class="feature-title">Employment</h3>
+                        <p class="feature-text">Navigate the Canadian job market</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🏥</div>
+                        <h3 class="feature-title">Healthcare</h3>
+                        <p class="feature-text">Access healthcare services</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🎓</div>
+                        <h3 class="feature-title">Education</h3>
+                        <p class="feature-text">Explore learning opportunities</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🥫</div>
+                        <h3 class="feature-title">Food</h3>
+                        <p class="feature-text">Discover nearby grocery stores, food banks, and restaurants</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">✈️</div>
+                        <h3 class="feature-title">Immigration</h3>
+                        <p class="feature-text">Navigate the complex immigration system</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">💰</div>
+                        <h3 class="feature-title"></h3>
+                        <p class="feature-text">Get financial help</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="about-cta">
+                <h2 class="cta-title">Ready to Start Your Journey?</h2>
+                <p class="cta-text">Let us help you settle into your new life in Canada</p>
+                <div class="cta-buttons">
+                    <a href="/user_data" class="btn btn-primary">Get Started</a>
+                    <a href="/" class="btn btn-secondary">Back to Homepage</a>
+                </div>
             </div>
         </div>
     </div>
+
     <script src="{{ url_for('static', filename='background-effects.js') }}"></script>
 </body>
 </html>

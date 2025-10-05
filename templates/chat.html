@@ -17,7 +17,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f7f7f8;
+            background: #650000ff;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -25,35 +25,34 @@
         }
 
         header {
-            background: white;
-            border-bottom: 1px solid #e5e5e5;
+            background: #420000ff;
             padding: 16px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         header h1 {
             font-size: 18px;
             font-weight: 600;
-            color: #1a1a1a;
+            color: #e6edf3;
         }
 
         .back-btn {
             padding: 8px 16px;
-            background: #f0f0f0;
-            border: none;
+            background: #650000ff;
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
-            color: #333;
+            color: #e6edf3;
             text-decoration: none;
             transition: background 0.2s;
         }
 
         .back-btn:hover {
-            background: #e0e0e0;
+            background: #ffffffff;
+            color: #420000ff
         }
 
         #chat-container {
@@ -62,8 +61,11 @@
             flex-direction: column;
             max-width: 900px;
             width: 100%;
-            margin: 0 auto;
+            margin: 24px auto;
             overflow: hidden;
+            background: #ffffffff;
+            border-radius: 16px;
+            border: 1px solid #4d0000ff;
         }
 
         #messages {
@@ -115,12 +117,12 @@
         }
 
         .message.user .avatar {
-            background: #2563eb;
+            background: #420000ff;
             color: white;
         }
 
         .message.assistant .avatar {
-            background: #10b981;
+            background: #be0000ff;
             color: white;
         }
 
@@ -132,15 +134,15 @@
         }
 
         .message.user .message-content {
-            background: #2563eb;
+            background: #be0000ff;
             color: white;
             border-bottom-right-radius: 4px;
         }
 
         .message.assistant .message-content {
-            background: white;
-            color: #1a1a1a;
-            border: 1px solid #e5e5e5;
+            background: #420000ff;
+            color: #e6edf3;
+            border: 1px solid #30363d;
             border-bottom-left-radius: 4px;
         }
 
@@ -168,20 +170,22 @@
         }
 
         .message-content code {
-            background: #f3f4f6;
+            background: #7b0000ff;
             padding: 2px 6px;
             border-radius: 4px;
             font-family: 'Courier New', monospace;
             font-size: 0.9em;
+            color: #e6edf3;
         }
 
         .message-content pre {
-            background: #1a1a1a;
-            color: #f7f7f8;
+            background: #7b0000ff;
+            color: #e6edf3;
             padding: 12px;
             border-radius: 8px;
             overflow-x: auto;
             margin: 8px 0;
+            border: 1px solid #300000ff;
         }
 
         .message-content pre code {
@@ -199,12 +203,12 @@
         }
 
         .message-content a {
-            color: #2563eb;
+            color: #420000ff;
             text-decoration: underline;
         }
 
         .message.user .message-content a {
-            color: #93c5fd;
+            color: #7b0000ff;
         }
 
         .thinking {
@@ -231,8 +235,9 @@
 
         #input-container {
             padding: 16px 24px 24px;
-            background: white;
-            border-top: 1px solid #e5e5e5;
+            background: #400000ff;
+            border-top: 1px solid #5a0000ff;
+            border-radius: 0 0 16px 16px;
         }
 
         #input-wrapper {
@@ -246,7 +251,7 @@
         #message-input {
             flex: 1;
             padding: 12px 16px;
-            border: 1px solid #d1d5db;
+            border: 1px solid #b3a1a1ff;
             border-radius: 12px;
             font-size: 15px;
             font-family: inherit;
@@ -255,16 +260,18 @@
             min-height: 48px;
             line-height: 1.5;
             transition: border-color 0.2s;
+            background: #7c0000ff;
+            color: #e6edf3;
         }
 
         #message-input:focus {
             outline: none;
-            border-color: #2563eb;
+            border-color: #7d0000ff;
         }
 
         #send-btn {
             padding: 12px 24px;
-            background: #2563eb;
+            background: #7d0000ff;
             color: white;
             border: none;
             border-radius: 12px;
@@ -276,7 +283,7 @@
         }
 
         #send-btn:hover:not(:disabled) {
-            background: #1d4ed8;
+            background: #980000ff;
         }
 
         #send-btn:disabled {
@@ -294,12 +301,12 @@
         }
 
         #messages::-webkit-scrollbar-thumb {
-            background: #d1d5db;
+            background: #30363d;
             border-radius: 4px;
         }
 
         #messages::-webkit-scrollbar-thumb:hover {
-            background: #9ca3af;
+            background: #484f58;
         }
     </style>
 </head>
