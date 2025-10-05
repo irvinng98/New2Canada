@@ -51,14 +51,14 @@ def index():
     """Renders the landing page (index.html)."""
     return render_template('index.html')
 
-@app.route('/onboarding', methods=['GET', 'POST'])
-def onboarding():
+@app.route('/user_data', methods=['GET', 'POST'])
+def user_data():
     """
-    Handles GET request to display the onboarding form (onboarding.html)
+    Handles GET request to display the user_data form (user_data.html)
     and POST request to save user data to the session and redirect to assistance.
     """
     if request.method == 'POST':
-        # Retrieve data from the onboarding form
+        # Retrieve data from the user_data form
         session['location'] = request.form.get('location')
         session['status'] = request.form.get('status')
         session['gender'] = request.form.get('gender')
@@ -67,8 +67,8 @@ def onboarding():
         # Redirect the user to the assistance selection page
         return redirect(url_for('assistance'))
         
-    # For GET request, render the onboarding form
-    return render_template('onboarding.html')
+    # For GET request, render the user_data form
+    return render_template('user_data.html')
 
 @app.route('/about')
 def about():
@@ -80,8 +80,8 @@ def assistance():
     """Renders the assistance category selection page (assistance.html)."""
     # Check if essential session data exists before letting the user proceed
     if 'location' not in session:
-        # Redirect to onboarding if user profile is missing
-        return redirect(url_for('onboarding'))
+        # Redirect to user_data if user profile is missing
+        return redirect(url_for('user_data'))
         
     return render_template('assistance.html')
 
