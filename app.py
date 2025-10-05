@@ -9,8 +9,6 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
     # Set a placeholder key if running outside of a system that sets the ENV var
-    # NOTE: You MUST set GEMINI_API_KEY in your environment for this to work correctly.
-    # The canvas environment automatically provides a key, but for local Flask testing, you'll need one.
     print("Warning: GEMINI_API_KEY environment variable not set. Using fallback model if needed.")
     pass
 
@@ -24,25 +22,9 @@ except Exception:
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "replace_this_in_production")  # Always change for production
 
-# Define the custom model paths
-CATEGORY_MODELS = {
-    # We keep the full path here for clear reference, but the code will strip it before API use.
-    'housing': 'tunedModels/HousingResourceBot',
-    'employment': 'tunedModels/EmploymentResourceBot',
-    'education': 'tunedModels/EducationResourceBot',
-    'healthcare': 'tunedModels/HealthcareResourceBot',
-    'financial': 'tunedModels/FinancialResourceBot',
-    'immigration': 'tunedModels/ImmigrationResourceBot',
-    'food': 'tunedModels/FoodResourceBot'
-}
-# Fallback model for categories not in CATEGORY_MODELS or when a tuned model fails
-FALLBACK_MODEL = 'gemini-2.5-flash'
+# Define the single, primary model to use for all requests
+PRIMARY_MODEL = 'gemini-2.5-flash'
 
-def sanitize_model_name(model_path):
-    """Strips the 'tunedModels/' prefix if present to get the final resource name."""
-    if model_path.startswith('tunedModels/'):
-        return model_path.split('/')[-1]
-    return model_path
 
 # --- Routes ---
 
@@ -111,52 +93,39 @@ def get_chat_response():
     if not user_message or not category or 'location' not in session:
         return jsonify({'response': 'Error: Missing user details or message.'}), 400
     
-    # 1. Get the appropriate model name path
-    model_path = CATEGORY_MODELS.get(category.lower(), FALLBACK_MODEL)
+    # The model is fixed to the PRIMARY_MODEL
+    model_name = PRIMARY_MODEL
     
-    # 2. SANITIZE the model name for the API call
-    model_name = sanitize_model_name(model_path)
-    
-    # 3. Define the System Instruction for context
+    # Define the System Instruction based on the user's request for tailored assistance
     system_instruction = f"""
-    You are New2Canada, a helpful and encouraging AI assistant specializing in resources for newcomers to Canada. 
-    You are currently providing assistance related to the **{category.capitalize()}** category. 
+    Your purpose is to provide essential and tailored resource information and assistance to new immigrants in Canada.
+    You are currently responding to a query related to the **{category.capitalize()}** category (e.g., Housing, Employment, etc.).
     
-    **User Profile:**
-    - Location: {session.get('location')}
-    - Status: {session.get('status')}
-    - Gender: {session.get('gender')}
-    - Age: {session.get('age')}
+    **User Profile (Context for Personalization):**
+    - Location: {session.get('location', 'N/A')}
+    - Immigration Status: {session.get('status', 'N/A')}
+    - Gender: {session.get('gender', 'N/A')}
+    - Age: {session.get('age', 'N/A')}
     
-    Please provide a concise, highly relevant, and personalized response to the user's request based on this profile and the specific {category} resources. Keep the tone friendly and supportive.
+    Given this profile, provide a concise, friendly, and highly relevant response to the user's message, focusing on resources and guidance within the **{category.capitalize()}** topic.
     """
     
     try:
-        # If it's a standard model, we use the system_instruction config
-        if model_name == FALLBACK_MODEL:
-             response = client.models.generate_content(
-                model=model_name,
-                contents=[user_message],
-                config=genai.types.GenerateContentConfig(
-                    system_instruction=system_instruction
-                )
+        # Call the standard generate_content API, passing the personalization context via system_instruction
+        response = client.models.generate_content(
+            model=model_name,
+            contents=[user_message],
+            config=genai.types.GenerateContentConfig(
+                system_instruction=system_instruction
             )
-        # If it's a tuned model, we must pass the context in the contents array.
-        else:
-            # We will create the combined prompt: system_instruction + user_message
-            full_prompt = system_instruction + "\n\nUser message: " + user_message
-            
-            response = client.models.generate_content(
-                model=model_name,
-                contents=[full_prompt]
-            )
+        )
 
         return jsonify({'response': response.text})
     except Exception as e:
-        app.logger.error(f"Gemini API Error for category {category} using sanitized model name {model_name} (Original: {model_path}): {e}")
+        app.logger.error(f"Gemini API Error for category {category} using model {model_name}: {e}")
         # Provide user-friendly feedback
         return jsonify({
-            'response': f'Sorry, I ran into a communication issue ({model_name} failed). Please try again or switch categories.'
+            'response': f'Sorry, I ran into an error communicating with the AI model ({model_name}). Please try again.'
         }), 500
 
 
