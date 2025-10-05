@@ -26,6 +26,7 @@ app.secret_key = os.getenv("SECRET_KEY", "replace_this_in_production")  # Always
 
 # Define the custom model paths
 CATEGORY_MODELS = {
+    # We keep the full path here for clear reference, but the code will strip it before API use.
     'housing': 'tunedModels/HousingResourceBot',
     'employment': 'tunedModels/EmploymentResourceBot',
     'education': 'tunedModels/EducationResourceBot',
@@ -37,6 +38,11 @@ CATEGORY_MODELS = {
 # Fallback model for categories not in CATEGORY_MODELS or when a tuned model fails
 FALLBACK_MODEL = 'gemini-2.5-flash'
 
+def sanitize_model_name(model_path):
+    """Strips the 'tunedModels/' prefix if present to get the final resource name."""
+    if model_path.startswith('tunedModels/'):
+        return model_path.split('/')[-1]
+    return model_path
 
 # --- Routes ---
 
@@ -105,10 +111,13 @@ def get_chat_response():
     if not user_message or not category or 'location' not in session:
         return jsonify({'response': 'Error: Missing user details or message.'}), 400
     
-    # 1. Get the appropriate model name
-    model_name = CATEGORY_MODELS.get(category.lower(), FALLBACK_MODEL)
+    # 1. Get the appropriate model name path
+    model_path = CATEGORY_MODELS.get(category.lower(), FALLBACK_MODEL)
     
-    # 2. Define the System Instruction for context
+    # 2. SANITIZE the model name for the API call
+    model_name = sanitize_model_name(model_path)
+    
+    # 3. Define the System Instruction for context
     system_instruction = f"""
     You are New2Canada, a helpful and encouraging AI assistant specializing in resources for newcomers to Canada. 
     You are currently providing assistance related to the **{category.capitalize()}** category. 
@@ -123,14 +132,7 @@ def get_chat_response():
     """
     
     try:
-        # 3. Use the client.models.generate_content method directly for better compatibility with tuned models
-        # Note: Tuned models usually don't support the system_instruction parameter, so we prepend the context to the user message.
-        # Since we cannot determine if the model supports system_instruction here, we use the model name as the only parameter.
-        
-        # We will create the combined prompt: system_instruction + user_message
-        full_prompt = system_instruction + "\n\nUser message: " + user_message
-        
-        # If it's a standard model, we can use the preferred system_instruction method
+        # If it's a standard model, we use the system_instruction config
         if model_name == FALLBACK_MODEL:
              response = client.models.generate_content(
                 model=model_name,
@@ -141,6 +143,9 @@ def get_chat_response():
             )
         # If it's a tuned model, we must pass the context in the contents array.
         else:
+            # We will create the combined prompt: system_instruction + user_message
+            full_prompt = system_instruction + "\n\nUser message: " + user_message
+            
             response = client.models.generate_content(
                 model=model_name,
                 contents=[full_prompt]
@@ -148,7 +153,7 @@ def get_chat_response():
 
         return jsonify({'response': response.text})
     except Exception as e:
-        app.logger.error(f"Gemini API Error for category {category} using model {model_name}: {e}")
+        app.logger.error(f"Gemini API Error for category {category} using sanitized model name {model_name} (Original: {model_path}): {e}")
         # Provide user-friendly feedback
         return jsonify({
             'response': f'Sorry, I ran into a communication issue ({model_name} failed). Please try again or switch categories.'
@@ -157,5 +162,4 @@ def get_chat_response():
 
 if __name__ == '__main__':
     # Flask is configured to run when the script is executed directly
-    # Ensure you are mapping /onboarding correctly in assistance.html
     app.run(host='0.0.0.0', port=5000, debug=True)
