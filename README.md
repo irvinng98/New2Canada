@@ -1,4 +1,4 @@
-<img width="400" height="400" img align="right" alt="Company Logo" src="https://github.com/user-attachments/assets/8b56013b-689a-41b8-a7f2-73f4e0e5e739" />
+<img width="400" height="400"  alt="Company Logo" src="https://github.com/user-attachments/assets/8b56013b-689a-41b8-a7f2-73f4e0e5e739" />
 
 # New2Canada - New To Canada AI Helper 
 *This web app is created for the SFU Surge Stormhacks 2025 hackathon*
