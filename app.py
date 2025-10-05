@@ -8,9 +8,18 @@ import os
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY environment variable is not set!")
+    # Set a placeholder key if running outside of a system that sets the ENV var
+    # NOTE: You MUST set GEMINI_API_KEY in your environment for this to work correctly.
+    # The canvas environment automatically provides a key, but for local Flask testing, you'll need one.
+    print("Warning: GEMINI_API_KEY environment variable not set. Using fallback model if needed.")
+    pass
 
-genai.configure(api_key=GEMINI_API_KEY)
+# Initialize the Gemini client and application
+try:
+    client = genai.Client(api_key=GEMINI_API_KEY)
+except Exception:
+    # Create a dummy client if the API key is not available, which will likely fail on API calls but allow the app to run locally for testing.
+    client = None
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "replace_this_in_production")  # Always change for production
@@ -25,6 +34,9 @@ CATEGORY_MODELS = {
     'immigration': 'tunedModels/ImmigrationResourceBot',
     'food': 'tunedModels/FoodResourceBot'
 }
+# Fallback model for categories not in CATEGORY_MODELS or when a tuned model fails
+FALLBACK_MODEL = 'gemini-2.5-flash'
+
 
 # --- Routes ---
 
@@ -33,11 +45,14 @@ def index():
     """Renders the landing page (index.html)."""
     return render_template('index.html')
 
-@app.route('/user_data', methods=['GET', 'POST'])
-def user_data():
-    """Handles user user_data and saves profile data to the session."""
+@app.route('/onboarding', methods=['GET', 'POST'])
+def onboarding():
+    """
+    Handles GET request to display the onboarding form (onboarding.html)
+    and POST request to save user data to the session and redirect to assistance.
+    """
     if request.method == 'POST':
-        # Retrieve data from the user_data form
+        # Retrieve data from the onboarding form
         session['location'] = request.form.get('location')
         session['status'] = request.form.get('status')
         session['gender'] = request.form.get('gender')
@@ -46,7 +61,8 @@ def user_data():
         # Redirect the user to the assistance selection page
         return redirect(url_for('assistance'))
         
-    return render_template('user_data.html')
+    # For GET request, render the onboarding form
+    return render_template('onboarding.html')
 
 @app.route('/about')
 def about():
@@ -58,7 +74,8 @@ def assistance():
     """Renders the assistance category selection page (assistance.html)."""
     # Check if essential session data exists before letting the user proceed
     if 'location' not in session:
-        return redirect(url_for('user_data'))
+        # Redirect to onboarding if user profile is missing
+        return redirect(url_for('onboarding'))
         
     return render_template('assistance.html')
 
@@ -80,14 +97,18 @@ def get_chat_response():
     user_message = data.get('message')
     category = data.get('category')
     
+    if not client:
+        app.logger.error("Gemini client is not initialized.")
+        return jsonify({'response': 'API connection error: The Gemini client is unavailable.'}), 500
+
     # Safety check for required data
     if not user_message or not category or 'location' not in session:
         return jsonify({'response': 'Error: Missing user details or message.'}), 400
     
-    # 1. Get the appropriate model for this category, fallback to default if not found
-    model_name = CATEGORY_MODELS.get(category.lower(), 'gemini-2.5-flash')
+    # 1. Get the appropriate model name
+    model_name = CATEGORY_MODELS.get(category.lower(), FALLBACK_MODEL)
     
-    # 2. Use the system_instruction parameter for cleaner persona/context definition
+    # 2. Define the System Instruction for context
     system_instruction = f"""
     You are New2Canada, a helpful and encouraging AI assistant specializing in resources for newcomers to Canada. 
     You are currently providing assistance related to the **{category.capitalize()}** category. 
@@ -98,25 +119,43 @@ def get_chat_response():
     - Gender: {session.get('gender')}
     - Age: {session.get('age')}
     
-    Please provide a concise, highly relevant, and personalized response to the user's request based on this profile and the specific {category} resources you have been tuned on. Keep the tone friendly and supportive.
+    Please provide a concise, highly relevant, and personalized response to the user's request based on this profile and the specific {category} resources. Keep the tone friendly and supportive.
     """
     
     try:
-        # Initialize the model with the correct model name (your gem) and the system instruction
-        model = genai.GenerativeModel(
-            model_name=model_name,
-            system_instruction=system_instruction
-        )
+        # 3. Use the client.models.generate_content method directly for better compatibility with tuned models
+        # Note: Tuned models usually don't support the system_instruction parameter, so we prepend the context to the user message.
+        # Since we cannot determine if the model supports system_instruction here, we use the model name as the only parameter.
         
-        # Now, only pass the user's direct message to the model
-        response = model.generate_content(user_message)
+        # We will create the combined prompt: system_instruction + user_message
+        full_prompt = system_instruction + "\n\nUser message: " + user_message
         
+        # If it's a standard model, we can use the preferred system_instruction method
+        if model_name == FALLBACK_MODEL:
+             response = client.models.generate_content(
+                model=model_name,
+                contents=[user_message],
+                config=genai.types.GenerateContentConfig(
+                    system_instruction=system_instruction
+                )
+            )
+        # If it's a tuned model, we must pass the context in the contents array.
+        else:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=[full_prompt]
+            )
+
         return jsonify({'response': response.text})
     except Exception as e:
-        # Log the error for debugging
         app.logger.error(f"Gemini API Error for category {category} using model {model_name}: {e}")
-        return jsonify({'response': 'Sorry, I ran into an issue connecting with my intelligence. Please check the logs.'}), 500
+        # Provide user-friendly feedback
+        return jsonify({
+            'response': f'Sorry, I ran into a communication issue ({model_name} failed). Please try again or switch categories.'
+        }), 500
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    # Flask is configured to run when the script is executed directly
+    # Ensure you are mapping /onboarding correctly in assistance.html
+    app.run(host='0.0.0.0', port=5000, debug=True)
