@@ -75,6 +75,20 @@ def get_chat_response():
     if not user_message or not category or 'location' not in session:
         return jsonify({'response': 'Error: Missing user details or message.'}), 400
     
+    # Map each category to its specific Gem model
+    CATEGORY_MODELS = {
+        'housing': 'tunedModels/HousingResourceBot',
+        'employment': 'tunedModels/EmploymentResourceBot',
+        'education': 'tunedModels/EducationResourceBot',
+        'healthcare': 'tunedModels/HealthcareResourceBot',
+        'financial': 'tunedModels/FinancialResourceBot',
+        'clothing': 'tunedModels/ClothingResourceBot',
+        'food': 'tunedModels/FoodResourceBot'
+    }
+    
+    # Get the appropriate model for this category, fallback to default if not found
+    model_name = CATEGORY_MODELS.get(category.lower(), 'gemini-2.5-flash')
+    
     # Create a detailed system prompt for personalization
     prompt = f"""
     You are New2Canada, a helpful and encouraging AI assistant specializing in resources for newcomers to Canada. 
@@ -91,13 +105,13 @@ def get_chat_response():
     """
     
     try:
-        model = genai.GenerativeModel('gemini-2.5-flash') # Switched to a faster model for chat
+        model = genai.GenerativeModel(model_name)
         response = model.generate_content(prompt)
         
         return jsonify({'response': response.text})
     except Exception as e:
         # Log the error for debugging
-        app.logger.error(f"Gemini API Error: {e}")
+        app.logger.error(f"Gemini API Error for category {category}: {e}")
         return jsonify({'response': 'Sorry, I ran into an issue connecting with my intelligence. Please try again.'}), 500
 
 if __name__ == '__main__':
