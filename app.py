@@ -9,14 +9,25 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
     # Set a placeholder key if running outside of a system that sets the ENV var
-    print("Warning: GEMINI_API_KEY environment variable not set. Using fallback model if needed.")
+    # NOTE: You MUST set GEMINI_API_KEY in your environment for this to work correctly.
+    print("Warning: GEMINI_API_KEY environment variable not set. Client initialization might fail.")
     pass
 
 # Initialize the Gemini client and application
+client = None # Initialize client to None globally
 try:
+    # TEMPORARY DEBUGGING STEP: Log whether the key was successfully loaded
+    if GEMINI_API_KEY:
+        print("DEBUG: GEMINI_API_KEY successfully loaded (length > 0). Attempting client init.")
+    else:
+        print("DEBUG: GEMINI_API_KEY is empty or None. Client init will likely fail.")
+    
+    # Attempt to initialize the client with the key
     client = genai.Client(api_key=GEMINI_API_KEY)
-except Exception:
-    # Create a dummy client if the API key is not available, which will likely fail on API calls but allow the app to run locally for testing.
+except Exception as e:
+    # The client failed to initialize. Log the specific error message to help diagnose the issue.
+    # The most common reason is a missing or invalid GEMINI_API_KEY.
+    print(f"ERROR: Failed to initialize Gemini client. Details: {e}")
     client = None
 
 app = Flask(__name__)
@@ -86,6 +97,7 @@ def get_chat_response():
     category = data.get('category')
     
     if not client:
+        # This is where the error message is generated.
         app.logger.error("Gemini client is not initialized.")
         return jsonify({'response': 'API connection error: The Gemini client is unavailable.'}), 500
 
