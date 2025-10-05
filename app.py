@@ -2,29 +2,47 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import google.generativeai as genai
 import os
 
-# Configure the Gemini API
-# NOTE: Replace the placeholder API key below with a secure environment variable or a real key.
-# For security in a production environment, use os.environ.get("GEMINI_API_KEY")
-genai.configure(api_key="AIzaSyDHHx8-136Q5Cw0b6bVe8ud2Q3J3uSmDNU")
+# --- Configuration and Initialization ---
+
+# 1. BEST PRACTICE: Read API Key from environment variable for security.
+#    If the key is not set in the environment, you can provide a placeholder or raise an error.
+GEMINI_API_KEY = "AIzaSyDHHx8-136Q5Cw0b6bVe8ud2Q3J3uSmDNU"
+
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+else:
+    # NOTE: In a production environment, this should halt the app or use a robust secret manager.
+    print("WARNING: GEMINI_API_KEY not found. Using a placeholder or default configuration.")
+    # For development/testing purposes, a placeholder can sometimes be used.
+    # genai.configure(api_key="YOUR_PLACEHOLDER_KEY")
 
 app = Flask(__name__)
-# It's highly recommended to generate a strong, unique key for production
-app.secret_key = 'supersecretkey'
+# IMPORTANT: Generate a strong, unique key for production deployment
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default_fallback_secret_key_change_me')
+
+# Define the custom model paths
+CATEGORY_MODELS = {
+    'housing': 'tunedModels/HousingResourceBot',
+    'employment': 'tunedModels/EmploymentResourceBot',
+    'education': 'tunedModels/EducationResourceBot',
+    'healthcare': 'tunedModels/HealthcareResourceBot',
+    'financial': 'tunedModels/FinancialResourceBot',
+    'immigration': 'tunedModels/ImmigrationResourceBot',
+    'food': 'tunedModels/FoodResourceBot'
+}
+
+# --- Routes ---
 
 @app.route('/', methods=['GET'])
 def index():
     """Renders the landing page (index.html)."""
-    # The home page only needs to render the HTML. Navigation to /onboarding is done via the button.
     return render_template('index.html')
 
-@app.route('/onboarding', methods=['GET', 'POST'])
-def onboarding():
-    """
-    Handles GET request to display the onboarding form (onboarding.html)
-    and POST request to save user data to the session and redirect to assistance.
-    """
+@app.route('/user_data', methods=['GET', 'POST'])
+def user_data():
+    """Handles user user_data and saves profile data to the session."""
     if request.method == 'POST':
-        # Retrieve data from the onboarding form
+        # Retrieve data from the user_data form
         session['location'] = request.form.get('location')
         session['status'] = request.form.get('status')
         session['gender'] = request.form.get('gender')
@@ -33,15 +51,11 @@ def onboarding():
         # Redirect the user to the assistance selection page
         return redirect(url_for('assistance'))
         
-    # For GET request, render the onboarding form
-    return render_template('onboarding.html')
+    return render_template('user_data.html')
 
 @app.route('/about')
 def about():
-    """
-    Handles GET request to display the about us form (about.html)    
-    """
-    # For GET request, render the onboarding form
+    """Renders the about us page (about.html)."""
     return render_template('about.html')
 
 @app.route('/assistance')
@@ -49,7 +63,7 @@ def assistance():
     """Renders the assistance category selection page (assistance.html)."""
     # Check if essential session data exists before letting the user proceed
     if 'location' not in session:
-        return redirect(url_for('onboarding'))
+        return redirect(url_for('user_data'))
         
     return render_template('assistance.html')
 
@@ -75,45 +89,40 @@ def get_chat_response():
     if not user_message or not category or 'location' not in session:
         return jsonify({'response': 'Error: Missing user details or message.'}), 400
     
-    # Map each category to its specific Gem model
-    CATEGORY_MODELS = {
-        'housing': 'tunedModels/HousingResourceBot',
-        'employment': 'tunedModels/EmploymentResourceBot',
-        'education': 'tunedModels/EducationResourceBot',
-        'healthcare': 'tunedModels/HealthcareResourceBot',
-        'financial': 'tunedModels/FinancialResourceBot',
-        'clothing': 'tunedModels/ClothingResourceBot',
-        'food': 'tunedModels/FoodResourceBot'
-    }
-    
-    # Get the appropriate model for this category, fallback to default if not found
+    # 1. Get the appropriate model for this category, fallback to default if not found
     model_name = CATEGORY_MODELS.get(category.lower(), 'gemini-2.5-flash')
     
-    # Create a detailed system prompt for personalization
-    prompt = f"""
+    # 2. Use the system_instruction parameter for cleaner persona/context definition
+    system_instruction = f"""
     You are New2Canada, a helpful and encouraging AI assistant specializing in resources for newcomers to Canada. 
-    The user is asking about {category}. 
+    You are currently providing assistance related to the **{category.capitalize()}** category. 
     
-    User Profile:
+    **User Profile:**
     - Location: {session.get('location')}
     - Status: {session.get('status')}
     - Gender: {session.get('gender')}
     - Age: {session.get('age')}
     
-    Please provide a concise, relevant, and personalized response to the user's request based on their profile.
-    User message: "{user_message}"
+    Please provide a concise, highly relevant, and personalized response to the user's request based on this profile and the specific {category} resources you have been tuned on. Keep the tone friendly and supportive.
     """
     
     try:
-        model = genai.GenerativeModel(model_name)
-        response = model.generate_content(prompt)
+        # Initialize the model with the correct model name (your gem) and the system instruction
+        model = genai.GenerativeModel(
+            model_name=model_name,
+            system_instruction=system_instruction
+        )
+        
+        # Now, only pass the user's direct message to the model
+        response = model.generate_content(user_message)
         
         return jsonify({'response': response.text})
     except Exception as e:
         # Log the error for debugging
-        app.logger.error(f"Gemini API Error for category {category}: {e}")
-        return jsonify({'response': 'Sorry, I ran into an issue connecting with my intelligence. Please try again.'}), 500
+        app.logger.error(f"Gemini API Error for category {category} using model {model_name}: {e}")
+        return jsonify({'response': 'Sorry, I ran into an issue connecting with my intelligence. Please check the logs.'}), 500
 
 if __name__ == '__main__':
     # Flask is configured to run when the script is executed directly
+    # In production, use a WSGI server like Gunicorn
     app.run(debug=True)
